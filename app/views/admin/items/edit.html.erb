@@ -1,7 +1,9 @@
-
 <h3 class="greeting">Create a New Dog</h3>
 <%= form_for(@item, url: admin_item_path) do |f| %>
+  <%= f.label :title %>
   <%= f.text_field :title, placeholder: "hot dog title" %><br>
+
+  <%= f.label :description %>
   <%= f.text_field :description, placeholder: "description" %><br>
 
   <%= f.label :price %>
