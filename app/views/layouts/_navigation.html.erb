@@ -20,7 +20,7 @@
       <div class="col-xs-2 nav-dropdown">
           <%= form_for(:category, url: :items, method: :get) do |f| %>
             <%= f.label "Dog Breeds: " %>
-            <%= f.collection_select(:category_id, Category.all.order(:name), :id, :name, {:prompt => 'Select'}, onchange: "submit()") %>
+            <%= f.collection_select(:id, Category.all.order(:name), :id, :name, {:prompt => 'Select'}, onchange: "submit()") %>
           <% end %>
       </div>
 
