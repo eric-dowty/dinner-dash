@@ -1,0 +1,27 @@
+<h4>Total Orders by Status</h4>
+<p>
+  <% @orders.each do |order| %>
+    <%= order.status %>: <%= order.ordered_count(status.name) %>
+  <% end %>
+</p>
+
+<h4>Orders:</h4>
+<ul>
+  <li><% orders.each do |order| %></li>
+  <li><%= link_to order.date, admin_order_path(order) %></li>
+  <% end %>
+</ul>
+
+<h4>List of Orders by Status</h4>
+<p>
+  ordered:
+</p>
+<p>
+  paid:
+</p>
+<p>
+  cancelled:
+</p>
+<p>
+  completed:
+</p>

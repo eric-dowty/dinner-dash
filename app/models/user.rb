@@ -9,6 +9,10 @@ class User < ActiveRecord::Base
 
   enum role: ["default", "admin"]
 
+  def admin?
+    role == "admin"
+  end
+
   def display?
     display_name && display_name != ""
   end

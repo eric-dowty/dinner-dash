@@ -47,4 +47,8 @@ class Order < ActiveRecord::Base
     report
   end
 
+  def ordered_count(name)
+    statuses.where(name: name).count
+  end
+
 end
