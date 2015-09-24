@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
-#path 'components' do
-gem 'erics-amazing-engine', path: 'components/persistence'
-#end
+gemspec path: 'components/persistence'
 
 gem 'pg'
 gem 'bcrypt'

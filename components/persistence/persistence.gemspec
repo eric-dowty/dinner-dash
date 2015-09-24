@@ -5,11 +5,11 @@ require "persistence/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "erics-amazing-engine"
+  s.name        = "persistence"
   s.version     = Persistence::VERSION
   s.authors     = ["test"]
   s.email       = ["test@example.com"]
-  s.homepage    = "some bullshit"
+  s.homepage    = "www.example.com"
   s.summary     = "some bullshit"
   s.description = "some bullshit"
   s.license     = "MIT"
