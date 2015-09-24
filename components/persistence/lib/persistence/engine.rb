@@ -2,8 +2,6 @@ Gem.loaded_specs['persistence'].dependencies.each do |d|
   require d.name
 end
 
-require 'persistence/engine'
-
 module Persistence
   class Engine < ::Rails::Engine
     initializer :append_migrations do |app|
