@@ -1,0 +1,1841 @@
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.0ms)[0m  select sqlite_version(*)
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Migrating to CreateUsers (20150427222941)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email_address" varchar, "full_name" varchar, "password_digest" varchar, "display_name" varchar, "role" integer) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150427222941"]]
+  [1m[35m (0.7ms)[0m  commit transaction
+Migrating to CreateStatuses (20150427225104)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "statuses" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150427225104"]]
+  [1m[35m (0.4ms)[0m  commit transaction
+Migrating to CreateOrders (20150427225303)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "orders" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "order_date" datetime, "user_id" integer, "status_id" integer) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_orders_on_user_id" ON "orders" ("user_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_orders_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_orders_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_orders_on_status_id" ON "orders" ("status_id")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150427225303"]]
+  [1m[36m (0.5ms)[0m  [1mcommit transaction[0m
+Migrating to CreateItems (20150427225811)
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.2ms)[0m  [1mCREATE TABLE "items" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "description" varchar, "price" integer, "discontinue" boolean, "image_file_name" varchar, "image_content_type" varchar, "image_file_size" integer, "image_updated_at" datetime) [0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150427225811"]]
+  [1m[36m (0.5ms)[0m  [1mcommit transaction[0m
+Migrating to CreateOrderItems (20150427225906)
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.2ms)[0m  [1mCREATE TABLE "order_items" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "order_id" integer, "item_id" integer) [0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_order_items_on_order_id" ON "order_items" ("order_id")
+  [1m[36m (0.0ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_order_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_order_items_on_order_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_order_items_on_item_id" ON "order_items" ("item_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150427225906"]]
+  [1m[35m (0.6ms)[0m  commit transaction
+Migrating to CreateCategories (20150427225925)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "categories" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150427225925"]]
+  [1m[35m (0.4ms)[0m  commit transaction
+Migrating to CreateItemCategories (20150427225954)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "item_categories" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "item_id" integer, "category_id" integer) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_item_categories_on_item_id" ON "item_categories" ("item_id")[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_item_categories_on_item_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_item_categories_on_item_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_item_categories_on_category_id" ON "item_categories" ("category_id")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150427225954"]]
+  [1m[36m (0.6ms)[0m  [1mcommit transaction[0m
+Migrating to ChangeColumnEmail (20150427231915)
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.9ms)[0m  [1mCREATE TEMPORARY TABLE "ausers" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email_address" varchar, "full_name" varchar, "password_digest" varchar, "display_name" varchar, "role" integer) [0m
+  [1m[35m (0.0ms)[0m  SELECT * FROM "users"
+  [1m[36m (0.5ms)[0m  [1mDROP TABLE "users"[0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "full_name" varchar, "password_digest" varchar, "display_name" varchar, "role" integer) 
+  [1m[36m (0.0ms)[0m  [1mSELECT * FROM "ausers"[0m
+  [1m[35m (0.2ms)[0m  DROP TABLE "ausers"
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "email" varchar[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150427231915"]]
+  [1m[36m (0.6ms)[0m  [1mcommit transaction[0m
+Migrating to AdjustDiscontinueColumn (20150504202435)
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mCREATE TEMPORARY TABLE "aitems" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "description" varchar, "price" integer, "discontinue" boolean, "image_file_name" varchar, "image_content_type" varchar, "image_file_size" integer, "image_updated_at" datetime) [0m
+  [1m[35m (0.0ms)[0m  SELECT * FROM "items"
+  [1m[36m (0.1ms)[0m  [1mDROP TABLE "items"[0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "items" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "description" varchar, "price" integer, "image_file_name" varchar, "image_content_type" varchar, "image_file_size" integer, "image_updated_at" datetime) 
+  [1m[36m (0.0ms)[0m  [1mSELECT * FROM "aitems"[0m
+  [1m[35m (0.1ms)[0m  DROP TABLE "aitems"
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "items" ADD "discontinue" boolean DEFAULT 'f'[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150504202435"]]
+  [1m[36m (0.5ms)[0m  [1mcommit transaction[0m
+Migrating to AddTimestampsToOrders (20150505193720)
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "orders" ADD "created_at" datetime[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "orders" ADD "updated_at" datetime
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150505193720"]]
+  [1m[35m (0.5ms)[0m  commit transaction
+Migrating to AddDefaultPrepTimeToItems (20150506045517)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "items" ADD "prep_time" integer DEFAULT 12
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150506045517"]]
+  [1m[35m (0.5ms)[0m  commit transaction
+Migrating to AddDefaultValueToPrice (20150507152933)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  CREATE TEMPORARY TABLE "aitems" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "description" varchar, "price" integer, "image_file_name" varchar, "image_content_type" varchar, "image_file_size" integer, "image_updated_at" datetime, "discontinue" boolean DEFAULT 'f', "prep_time" integer DEFAULT 12) 
+  [1m[36m (0.0ms)[0m  [1mSELECT * FROM "items"[0m
+  [1m[35m (0.2ms)[0m  DROP TABLE "items"
+  [1m[36m (0.1ms)[0m  [1mCREATE TABLE "items" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "description" varchar, "price" integer DEFAULT 1, "image_file_name" varchar, "image_content_type" varchar, "image_file_size" integer, "image_updated_at" datetime, "discontinue" boolean DEFAULT 'f', "prep_time" integer DEFAULT 12) [0m
+  [1m[35m (0.0ms)[0m  SELECT * FROM "aitems"
+  [1m[36m (0.1ms)[0m  [1mDROP TABLE "aitems"[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150507152933"]]
+  [1m[36m (0.6ms)[0m  [1mcommit transaction[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_item_categories_on_category_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_item_categories_on_category_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_item_categories_on_item_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_item_categories_on_item_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_order_items_on_item_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_order_items_on_item_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_order_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_order_items_on_order_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_orders_on_status_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_orders_on_status_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_orders_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_orders_on_user_id' AND type='index'
+
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.2ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (2.1ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (2.1ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.2ms)[0m  [1mSELECT  "items".* FROM "items" WHERE "items"."id" = ? LIMIT 1[0m  [["id", 1]]
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.0ms)[0m  SELECT  "items".* FROM "items" WHERE "items"."id" = ? LIMIT 1  [["id", 1]]
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "spicy"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.8ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "spicy"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "spicy"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "item_categories" ("item_id", "category_id") VALUES (?, ?)[0m  [["item_id", 1], ["category_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.1ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "item_categories" ON "items"."id" = "item_categories"."item_id" WHERE "item_categories"."category_id" = ?[0m  [["category_id", 1]]
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.2ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" IS NULL AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = '' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "Super fancy stuff"], ["price", 300]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "items"[0m
+  [1m[35m (0.2ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.468934"], ["updated_at", "2015-09-24 19:29:51.468934"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$421TacGh.XAjf1EFx468runPkQBOvNiP0ThRFmQy1xe3Nmsf2ZDIu"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.491936"], ["updated_at", "2015-09-24 19:29:51.491936"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$c9NoKjypX4J/6/I1C/35n.IdnwZ2vGLyvsXX7/kFXJVVd4LQ/xEk."]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.503411"], ["updated_at", "2015-09-24 19:29:51.503411"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$tkafBQhRmwVK8MPzKkFETuQqKfioa/X92cwuUcN58PX8X4BBT83M."]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.1ms)[0m  SELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?  [["order_id", 1]]
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.513775"], ["updated_at", "2015-09-24 19:29:51.513775"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$EMSLGQ9DjSCnZlgmqDmJSO7f6xzjffQarDNTLasU/itbC2dCY/Yxq"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.532705"], ["updated_at", "2015-09-24 19:29:51.532705"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$lP0FAkLTdw06n5tUAOx/xOSZ6QAYWnY.2XZKDFhExKaKDKgb5i8dO"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.543590"], ["updated_at", "2015-09-24 19:29:51.543590"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$GMlFC6Vn51MRShU6Tava.uxmdzyZac..uTacKefHMA/Oxj19XkQzO"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.0ms)[0m  SELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?  [["order_id", 1]]
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.553345"], ["updated_at", "2015-09-24 19:29:51.553345"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$Fjvp1sWtss3HAv0LHEcZw.s7MjEEKUnZE23bh4c9N6ZD36LxcLPue"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.0ms)[0m  SELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?  [["order_id", 1]]
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.564138"], ["updated_at", "2015-09-24 19:29:51.564138"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$KhFeWlGDafeqyXA0.9YXZulth3GxC805PrS3MoALigC7anYw9o/aW"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ? AND "items"."id" = ?  [["order_id", 1], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ? AND "items"."id" = ?[0m  [["order_id", 1], ["id", 0]]
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.577670"], ["updated_at", "2015-09-24 19:29:51.577670"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$2HrIhNY.fa7S.wz6IWqQsuB8ZQhgvhniJIU19Ee7cEcRLkA4wUFwC"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.0ms)[0m  [1mSELECT  "items".* FROM "items" WHERE "items"."id" = ? LIMIT 1[0m  [["id", 1]]
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?[0m  [["order_id", 1]]
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.592540"], ["updated_at", "2015-09-24 19:29:51.592540"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$q6RO9Ogau2l/PgUYdxFNzuLKIvT2NiNsAfnIF87vHAFItSra/EgO6"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  UPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?  [["name", "paid"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mStatus Load (0.1ms)[0m  SELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1  [["name", "paid"]]
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  UPDATE "orders" SET "user_id" = ?, "status_id" = ?, "updated_at" = ? WHERE "orders"."id" = ?  [["user_id", 1], ["status_id", 1], ["updated_at", "2015-09-24 19:29:51.603853"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.606135"], ["updated_at", "2015-09-24 19:29:51.606135"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$iDbvs8oO8UNoljKIFWZScuUZEgyUBcZk00cITb0ofCtzQ3QeS4aTO"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  UPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?  [["name", "paid"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?  [["order_id", 1]]
+  [1m[36mStatus Load (0.0ms)[0m  [1mSELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1[0m  [["name", "paid"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "orders" WHERE "orders"."status_id" = ?  [["status_id", 1]]
+  [1m[36mItem Load (0.0ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "order_items"."order_id" = ?[0m  [["order_id", 1]]
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?  [["name", "paid"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mStatus Load (0.0ms)[0m  SELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1  [["name", "paid"]]
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$Lg8AnDA1q0xiAHYDJUQIOeHKPHpBX1r63iwX/F3No2RsttUm7z85y"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$XRaog2Tdr4C7qTr2v3eBMO0s756s4sl2iLnpCtpOXj224nQ2.f65m"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.634191"], ["updated_at", "2015-09-24 19:29:51.634191"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$CBLPS5oP.V7Jdw3XINvoO..MvkHad5J0pv2WO0q672/3bVXJBNvMS"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$o.DG05YpfSJQ.jq/I6YfpOotJJY69QZZ5/nrxgp0D2.Jf7GLFYwb2"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.644963"], ["updated_at", "2015-09-24 19:29:51.644963"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$QdBHSAOqed/LKsorlWrzm.8cuHRnkAAQEHpu.kVh.pS7fysOPv0hi"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$M4cD5XgMj9Zq4MSSVRIAlO8zyZt4dCB2SF5UP4uMvxcMefrWGZ9YW"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.656523"], ["updated_at", "2015-09-24 19:29:51.656523"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$Vnt38jHYOiGxmIXipaYDcuwcLsBXUjAD/BYoO8qv1w2knc2DlHfCO"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$aZ3T/uPsIc7e1LmJD4QDvuI9lK5uS25T7EUZAXWJTWwFvp2XRrGZG"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.669487"], ["updated_at", "2015-09-24 19:29:51.669487"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$aqf7cgReA9V1es4iRMfPvOqRGyzC6yOY32vBaGSGnxVVjRE74TPp2"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$tKm9HYXtrd8DfmUFQT3.8.NxJ/1Kudh6yzDFTI01fKqgwkJn0ybQ2"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.678262"], ["updated_at", "2015-09-24 19:29:51.678262"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$othNJTQ0GGPP2xezDySmS.WAUkX/ZKj2Q.a6ygAqcNOfT8/psBK16"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$E7OppPeH.nQl5dyyQgTlTu7pkXVJtbpYQ/ylt9adxsmtSBcbpqh.."]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.688338"], ["updated_at", "2015-09-24 19:29:51.688338"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$gqf93R/Yw0RzedqcJn8AReS0rnRPOcm28fDZ0FZ5Gi9HHiccQvUui"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$pa4JMs3N0gSBVblLW0YCS.reQzERLuIeyZdkMaZ/DOB6fRt7daoMW"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.697126"], ["updated_at", "2015-09-24 19:29:51.697126"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" IS NULL AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$0pcLEqrDytweG5NuFhSHOeNZu9ViBwheTAhVprGW/XqxaFtsVYT9."]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$tS5m691FYtk4VkPupdn2VuEZgyGLR81moDapQhj4jXcYB0P98SPDi"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.708216"], ["updated_at", "2015-09-24 19:29:51.708216"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'email_address' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.8ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$17vbjzjTc2Smg/eskACXWem7uwe66zc4qNVmNcs8eohKwbhnXwZHi"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$3DzAutNjn8qpIrXPG0A1guCL1UEZ9qYfXZs8MZoAGqS1dCWKAbJAm"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.721072"], ["updated_at", "2015-09-24 19:29:51.721072"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$X4JzLCYzN2JEZ9ACjc5NkuX59WjyqmL4/8N/QPeGmRdyN6RbFo68W"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$abI0I0fWTvz4FAmhOFJzKOPXgxXyfF.1uPmkAnzNRtl1RdMU1FJt6"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.729242"], ["updated_at", "2015-09-24 19:29:51.729242"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$u5EQZskOpBRWYuM5XEUO/eI3JUHVTiGUFo.d1OyjtQn6S.a4lo.FS"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$wDliSBtDDI8GpW9qoxs.HeFkOQGwMQh9RdNCjqSjKnx9hpm8WSDEq"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:29:51.738272"], ["updated_at", "2015-09-24 19:29:51.738272"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  UPDATE "orders" SET "status_id" = ?, "user_id" = ?, "updated_at" = ? WHERE "orders"."id" = ?  [["status_id", 1], ["user_id", 1], ["updated_at", "2015-09-24 19:29:51.739422"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mOrder Load (0.2ms)[0m  SELECT "orders".* FROM "orders" WHERE "orders"."user_id" = ?  [["user_id", 1]]
+  [1m[36mStatus Load (0.1ms)[0m  [1mSELECT  "statuses".* FROM "statuses" WHERE "statuses"."id" = ? LIMIT 1[0m  [["id", 1]]
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (2.1ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.1ms)[0m  [1mSELECT  "items".* FROM "items" WHERE "items"."discontinue" = ? AND "items"."id" = ? LIMIT 1[0m  [["discontinue", "f"], ["id", 1]]
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.0ms)[0m  SELECT  "items".* FROM "items" WHERE "items"."discontinue" = ? AND "items"."id" = ? LIMIT 1  [["discontinue", "f"], ["id", 1]]
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "spicy"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "spicy"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "spicy"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "item_categories" ("item_id", "category_id") VALUES (?, ?)[0m  [["item_id", 1], ["category_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.1ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "item_categories" ON "items"."id" = "item_categories"."item_id" WHERE "items"."discontinue" = ? AND "item_categories"."category_id" = ?[0m  [["discontinue", "f"], ["category_id", 1]]
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" IS NULL AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = '' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "Super fancy stuff"], ["price", 300]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "items" WHERE "items"."discontinue" = ?[0m  [["discontinue", "f"]]
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "items" SET "price" = ? WHERE "items"."id" = ?  [["price", 500], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mCategory Load (0.1ms)[0m  [1mSELECT  "categories".* FROM "categories" WHERE "categories"."name" = ? LIMIT 1[0m  [["name", "All Dogs"]]
+  [1m[35mCategory Exists (0.1ms)[0m  SELECT  1 AS one FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ? AND "categories"."id" = ? LIMIT 1  [["item_id", 1], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "item_categories" ("item_id", "category_id") VALUES (?, ?)  [["item_id", 1], ["category_id", 1]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mCategory Load (0.2ms)[0m  SELECT "categories".* FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ?  [["item_id", 1]]
+  [1m[36m (0.9ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "categories" ("name") VALUES (?)  [["name", "All Dogs"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mCategory Load (0.1ms)[0m  SELECT  "categories".* FROM "categories" WHERE "categories"."name" = ? LIMIT 1  [["name", "All Dogs"]]
+  [1m[36mCategory Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ? AND "categories"."id" = ? LIMIT 1[0m  [["item_id", 1], ["id", 1]]
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "item_categories" ("item_id", "category_id") VALUES (?, ?)[0m  [["item_id", 1], ["category_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mCategory Load (0.0ms)[0m  [1mSELECT "categories".* FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ?[0m  [["item_id", 1]]
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "categories" ("name") VALUES (?)[0m  [["name", "All Dogs"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mUPDATE "items" SET "price" = ? WHERE "items"."id" = ?[0m  [["price", 500], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mCategory Load (0.0ms)[0m  [1mSELECT  "categories".* FROM "categories" WHERE "categories"."name" = ? LIMIT 1[0m  [["name", "All Dogs"]]
+  [1m[35mCategory Exists (0.0ms)[0m  SELECT  1 AS one FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ? AND "categories"."id" = ? LIMIT 1  [["item_id", 1], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "item_categories" ("item_id", "category_id") VALUES (?, ?)  [["item_id", 1], ["category_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE ("items"."title" = 'Hotdog' AND "items"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mCategory Load (0.0ms)[0m  [1mSELECT "categories".* FROM "categories" INNER JOIN "item_categories" ON "categories"."id" = "item_categories"."category_id" WHERE "item_categories"."item_id" = ?[0m  [["item_id", 1]]
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.243121"], ["updated_at", "2015-09-24 19:30:51.243121"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$VZT9VuyKUndHOyzhrTo6I.51iAMPJg4G.9MK4B0Lcxz709abx6wvG"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.263555"], ["updated_at", "2015-09-24 19:30:51.263555"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$NOdvm9Yw5c5RuGw0mT8xROH.3DWMckWTQTwcfrLl2hIJWEY/z0AEq"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.274104"], ["updated_at", "2015-09-24 19:30:51.274104"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$S/TkfZ8GdrzEW7ciO1S0HOfBIxtcnAdXMDxiGK.jEp4WCvNH.ihyy"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.1ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?[0m  [["discontinue", "f"], ["order_id", 1]]
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.286172"], ["updated_at", "2015-09-24 19:30:51.286172"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$lUzMaHlLkCDyuFNa/r7ZEersQvcoaUNOxS6/BGfLYchD96S/7TIMi"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.296000"], ["updated_at", "2015-09-24 19:30:51.296000"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$O9n4OQmLtgZCeWi0WxseXef2hftBCLwwOI9Nx6tiQ3TF9jz9pkK4q"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.306216"], ["updated_at", "2015-09-24 19:30:51.306216"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$OqbmJc3eEfcaJLriVvgIpuRFihXVBTjgRvHKHGeeJeVy7OX3a5HBG"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.0ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?[0m  [["discontinue", "f"], ["order_id", 1]]
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.318040"], ["updated_at", "2015-09-24 19:30:51.318040"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$4hkN6zDMpdRGn2vTrjAHX.HEdIkaB9mzpwJ7Ew6Mj5jiLSequovPi"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mItem Load (0.0ms)[0m  [1mSELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?[0m  [["discontinue", "f"], ["order_id", 1]]
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.331291"], ["updated_at", "2015-09-24 19:30:51.331291"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$74WyLrlIsR5OpTVLNO9WWO5ydb.wff6CRvmcwsHyZtb4eyOyBQaxe"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mItem Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)[0m  [["order_id", 1], ["item_id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ? AND "items"."id" = ?[0m  [["discontinue", "f"], ["order_id", 1], ["id", 1]]
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ? AND "items"."id" = ?  [["discontinue", "f"], ["order_id", 1], ["id", 0]]
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.371353"], ["updated_at", "2015-09-24 19:30:51.371353"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$IfNdq8VehljvQWigVGFAv.czwEyoBc/.uddBoLmXT9/fnT0ukFu9e"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.1ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mItem Load (0.0ms)[0m  SELECT  "items".* FROM "items" WHERE "items"."discontinue" = ? AND "items"."id" = ? LIMIT 1  [["discontinue", "f"], ["id", 1]]
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?  [["discontinue", "f"], ["order_id", 1]]
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.385006"], ["updated_at", "2015-09-24 19:30:51.385006"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$Ww9IZfy6Bs8Vdkb7Eagy8uA/Gtj7279eNbll1/mfUaAB8tO1nyPWq"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mUPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?[0m  [["name", "paid"], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mStatus Load (0.1ms)[0m  [1mSELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1[0m  [["name", "paid"]]
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mUPDATE "orders" SET "user_id" = ?, "status_id" = ?, "updated_at" = ? WHERE "orders"."id" = ?[0m  [["user_id", 1], ["status_id", 1], ["updated_at", "2015-09-24 19:30:51.394353"], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.397151"], ["updated_at", "2015-09-24 19:30:51.397151"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$bVhnqGtOergpHjxsvyiDpe3Qxl00a1YiroUkb2vwl2vFUsmDGLiU2"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mItem Exists (0.0ms)[0m  SELECT  1 AS one FROM "items" WHERE "items"."title" = 'Hotdog' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "items" ("title", "description", "price") VALUES (?, ?, ?)[0m  [["title", "Hotdog"], ["description", "a hotdog"], ["price", 200]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "order_items" ("order_id", "item_id") VALUES (?, ?)  [["order_id", 1], ["item_id", 1]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.0ms)[0m  [1mUPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?[0m  [["name", "paid"], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?[0m  [["discontinue", "f"], ["order_id", 1]]
+  [1m[35mStatus Load (0.0ms)[0m  SELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1  [["name", "paid"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "orders" WHERE "orders"."status_id" = ?[0m  [["status_id", 1]]
+  [1m[35mItem Load (0.0ms)[0m  SELECT "items".* FROM "items" INNER JOIN "order_items" ON "items"."id" = "order_items"."item_id" WHERE "items"."discontinue" = ? AND "order_items"."order_id" = ?  [["discontinue", "f"], ["order_id", 1]]
+  [1m[36m (0.8ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mUPDATE "statuses" SET "name" = ? WHERE "statuses"."id" = ?[0m  [["name", "paid"], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mStatus Load (0.0ms)[0m  [1mSELECT  "statuses".* FROM "statuses" WHERE "statuses"."name" = ? LIMIT 1[0m  [["name", "paid"]]
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$/A7RSvwxX.8ZTApEYnoMq.X5ahOe.H2.5wbdzwU1v4dTa7sm9DAha"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$nq/DYG4MwpYyytIGe70O0Ob/qTBXyvJK1jqrNRIhOyAPOk3g9T5eK"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.427202"], ["updated_at", "2015-09-24 19:30:51.427202"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.2ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$nLyCmeFHiHcFF1IKuIwsDu56BlqeYRcwL4k6fjSQ6XAbvraMcyH9O"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$pqdif7WG7w8L3De1ZGSnWuhR/3J1IFvdV9rDwcjclVp0s2qC5qWTu"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.436086"], ["updated_at", "2015-09-24 19:30:51.436086"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$E0O5MRtfLPOvqcRQcM.ebuvY9jEEZ0087cA8Df5dF/gAStlgcNoj."]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$Uvsb9U4D4mlPFDED.nj7zePVivqiN9HtKERlSllZu7pDGjJGF71Y6"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.447126"], ["updated_at", "2015-09-24 19:30:51.447126"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$7.G.9w6BISfbsK8Kx.RNvOr3enO.1eSKVp04PLfrZwjyic8QkdV8y"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$QdSqztuJkAaWwS7MO2NKpe5HaXPGrjFr2qrgOGJ8mvQguDW1CWgs."]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.455593"], ["updated_at", "2015-09-24 19:30:51.455593"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$rmigavz7GZEV7HwV6N3MG.52pF2/TjtU1y4mJuZChUY45FwWD5fRu"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$goZFxYB38hp8PeoAQc0AReN0tWtUDbF25iK2pS6ep1cxeGGXZC9Oa"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.0ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.464317"], ["updated_at", "2015-09-24 19:30:51.464317"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$VYs5jUVOMPycEYtoOae6zuyiSavCcvwM33PjycUPiGFUY/AoHA.iy"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$ROFybt.qjikxg8EbYIp/QeEy/PfBoyIb8W4RCRBH0x2OyrtNl4S/O"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.0ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.473220"], ["updated_at", "2015-09-24 19:30:51.473220"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'example@email.com' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$tKtYYh4U497L7vGBgHn8rO3jWmjds1Bko/q70nZ2bO5ZeFGeadO9y"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$2sMhO51oxhFc.FmTExFaTu47mCQDuvqrzhSJ5ZW8G.yReb7S.RZwe"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.482757"], ["updated_at", "2015-09-24 19:30:51.482757"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE ("users"."email" IS NULL AND "users"."id" != 1) LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$60AGcuLRfC.GfTv2CMgNoe12eY.XsbZ81REwy1dsigKN5UgKUi1nu"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mUser Exists (0.0ms)[0m  SELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)[0m  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$qeFkODE4qtU3t2KGFE2DCe8se6BOllwFAeC8/qsNgqnvxwKavT9zy"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "statuses" ("name") VALUES (?)  [["name", "ordered"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.493810"], ["updated_at", "2015-09-24 19:30:51.493810"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE ("users"."email" = 'email_address' AND "users"."id" != 1) LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$skzXIrmQ8x770P5swif2sOzDbRLYg3GNDzs5e9uU0sAbOy9/lZQSO"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$Xc0bvyQY/PXMDWZQ4kX1sOS/d.Xit7AOzShzgOKTJJzd0ere7FkEC"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.504491"], ["updated_at", "2015-09-24 19:30:51.504491"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$ahH2MXs0UvkAEz3SesZ3ouXbrI1NKiOvuqXxbuyMRNmuhxJMP.0ey"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$QWg1IW634Y5LbTOwljaJI.IfA0CPWnPlsac9tlabab3WCdVX7yfDS"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.512547"], ["updated_at", "2015-09-24 19:30:51.512547"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'example@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "example@email.com"], ["role", 0], ["display_name", "kulio"], ["password_digest", "$2a$04$mHOphtEqp0oc.Q5wIeff8OpZmYTqBeYxWMilZHMMQ1ZAAVqcFRqnK"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mUser Exists (0.0ms)[0m  [1mSELECT  1 AS one FROM "users" WHERE "users"."email" = 'admin@email.com' LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("full_name", "email", "role", "display_name", "password_digest") VALUES (?, ?, ?, ?, ?)  [["full_name", "MyName"], ["email", "admin@email.com"], ["role", 1], ["display_name", "admin"], ["password_digest", "$2a$04$wFihRvABmouV1BBID9v1gONu6Zpj54W1pH3V6tGSgGeGp5wU7awq6"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "statuses" ("name") VALUES (?)[0m  [["name", "ordered"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "orders" ("order_date", "created_at", "updated_at") VALUES (?, ?, ?)  [["order_date", "2015-10-04 00:00:00.000000"], ["created_at", "2015-09-24 19:30:51.520755"], ["updated_at", "2015-09-24 19:30:51.520755"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mUPDATE "orders" SET "status_id" = ?, "user_id" = ?, "updated_at" = ? WHERE "orders"."id" = ?[0m  [["status_id", 1], ["user_id", 1], ["updated_at", "2015-09-24 19:30:51.521635"], ["id", 1]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mOrder Load (0.1ms)[0m  [1mSELECT "orders".* FROM "orders" WHERE "orders"."user_id" = ?[0m  [["user_id", 1]]
+  [1m[35mStatus Load (0.1ms)[0m  SELECT  "statuses".* FROM "statuses" WHERE "statuses"."id" = ? LIMIT 1  [["id", 1]]
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m

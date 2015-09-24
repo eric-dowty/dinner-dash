@@ -1,5 +1,10 @@
 source 'https://rubygems.org'
 
+path 'components' do
+  gem 'persistence'
+  gem 'validates_email_format_of'
+end
+
 gem 'pg'
 gem 'bcrypt'
 gem 'unicorn'
